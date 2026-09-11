@@ -1,0 +1,11 @@
+{
+  "name": "Flappy Jump",
+  "short_name": "Flappy Jump",
+  "description": "Mon jeu Flappy Jump jouable sur téléphone et ordinateur",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "lang": "fr"
+}
