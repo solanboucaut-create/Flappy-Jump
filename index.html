@@ -1,0 +1,2954 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#020617">
+
+<title>FLAPPY JUMP</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    touch-action:none;
+}
+
+body{
+    background:radial-gradient(circle at top,#334155,#020617);
+    font-family:Arial,Helvetica,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#gameContainer{
+    position:relative;
+    width:420px;
+    height:700px;
+    max-width:100vw;
+    max-height:100vh;
+    overflow:hidden;
+
+    border-radius:16px;
+    border:5px solid #111827;
+
+    background:#72cde8;
+
+    box-shadow:0 25px 70px rgba(0,0,0,.65);
+}
+
+canvas{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* SCORE */
+
+#score{
+    position:absolute;
+    top:20px;
+
+    width:100%;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:58px;
+    font-weight:bold;
+
+    z-index:10;
+
+    text-shadow:0 4px 5px black;
+}
+
+/* JOUEUR */
+
+#playerDisplay{
+    position:absolute;
+
+    top:90px;
+
+    width:100%;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:16px;
+    font-weight:bold;
+
+    z-index:11;
+
+    text-shadow:2px 2px 3px black;
+}
+
+/* PAUSE */
+
+#pauseButton{
+    position:absolute;
+
+    top:18px;
+    right:18px;
+
+    z-index:15;
+
+    width:55px;
+    height:55px;
+
+    margin:0;
+    padding:0;
+
+    border-radius:50%;
+
+    font-size:25px;
+
+    background:rgba(15,23,42,.85);
+
+    color:white;
+
+    border:2px solid rgba(255,255,255,.4);
+
+    box-shadow:0 4px 10px rgba(0,0,0,.4);
+
+    display:none;
+}
+
+/* PLEIN ECRAN */
+
+#fullscreenButton{
+    position:absolute;
+
+    top:18px;
+    left:18px;
+
+    z-index:15;
+
+    width:55px;
+    height:55px;
+
+    margin:0;
+    padding:0;
+
+    border-radius:50%;
+
+    font-size:23px;
+
+    background:rgba(15,23,42,.85);
+
+    color:white;
+
+    border:2px solid rgba(255,255,255,.4);
+
+    box-shadow:0 4px 10px rgba(0,0,0,.4);
+}
+
+#pauseButton:active,
+#fullscreenButton:active{
+    transform:scale(.9);
+    box-shadow:none;
+}
+
+/* MENUS */
+
+.overlay{
+    position:absolute;
+
+    inset:0;
+
+    z-index:20;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    color:white;
+
+    background:linear-gradient(
+        rgba(0,0,0,.10),
+        rgba(0,0,0,.45)
+    );
+}
+
+#menu{
+    display:flex;
+}
+
+#pauseMenu,
+#gameOver{
+    display:none;
+
+    background:rgba(0,0,0,.65);
+}
+
+/* TITRE */
+
+.title{
+    font-size:48px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+    text-shadow:4px 5px 0 #374151;
+}
+
+.birdLogo{
+    font-size:75px;
+}
+
+/* INSTRUCTIONS */
+
+.instructions{
+    font-size:16px;
+
+    line-height:1.6;
+
+    text-shadow:2px 2px 3px black;
+}
+
+/* PSEUDO */
+
+#playerName{
+    width:260px;
+
+    padding:13px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:18px;
+
+    text-align:center;
+
+    margin:15px;
+
+    outline:none;
+}
+
+/* BOUTONS */
+
+button{
+    width:250px;
+
+    margin:7px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:linear-gradient(#fde047,#eab308);
+
+    color:#422006;
+
+    box-shadow:0 5px 0 #a16207;
+}
+
+button:active{
+    transform:translateY(4px);
+
+    box-shadow:0 1px 0 #a16207;
+}
+
+.blueButton{
+    background:linear-gradient(#60a5fa,#2563eb);
+
+    color:white;
+
+    box-shadow:0 5px 0 #1e3a8a;
+}
+
+.redButton{
+    background:linear-gradient(#fb7185,#e11d48);
+
+    color:white;
+
+    box-shadow:0 5px 0 #9f1239;
+}
+
+/* SCORE BOX */
+
+.scoreBox{
+    background:rgba(15,23,42,.95);
+
+    padding:20px 35px;
+
+    border-radius:16px;
+
+    margin:15px;
+}
+
+.scoreLine{
+    font-size:21px;
+
+    margin:8px;
+}
+
+.scoreNumber{
+    color:#facc15;
+
+    font-size:27px;
+
+    font-weight:bold;
+}
+
+/* CLASSEMENT */
+
+.leaderboard{
+    margin-top:15px;
+
+    width:310px;
+
+    max-height:170px;
+
+    overflow-y:auto;
+
+    background:rgba(2,6,23,.8);
+
+    border:2px solid rgba(255,255,255,.2);
+
+    border-radius:12px;
+
+    padding:10px;
+}
+
+.leaderboard h3{
+    margin-bottom:8px;
+
+    color:#facc15;
+}
+
+.leaderRow{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:5px;
+
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+/* AIDE */
+
+#help{
+    position:absolute;
+
+    bottom:10px;
+
+    width:100%;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:12px;
+
+    z-index:15;
+
+    text-shadow:1px 1px 3px black;
+}
+
+/* TELEPHONE */
+
+@media(max-width:500px){
+
+    body{
+        background:#020617;
+    }
+
+    #gameContainer{
+        width:100vw;
+        height:100vh;
+
+        max-width:none;
+        max-height:none;
+
+        border:none;
+
+        border-radius:0;
+    }
+
+    .title{
+        font-size:40px;
+    }
+
+    #score{
+        font-size:50px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="gameContainer">
+
+<canvas
+id="game"
+width="420"
+height="700">
+</canvas>
+
+<div id="score">
+0
+</div>
+
+<div id="playerDisplay">
+</div>
+
+<!-- PLEIN ECRAN -->
+
+<button id="fullscreenButton">
+⛶
+</button>
+
+<!-- PAUSE -->
+
+<button id="pauseButton">
+⏸
+</button>
+
+
+<!-- ACCUEIL -->
+
+<div
+id="menu"
+class="overlay">
+
+<div class="birdLogo">
+🐦
+</div>
+
+<div class="title">
+FLAPPY JUMP
+</div>
+
+<div class="instructions">
+
+Bienvenue !<br>
+
+Entre ton pseudo pour commencer.
+
+</div>
+
+<input
+
+id="playerName"
+
+type="text"
+
+maxlength="15"
+
+placeholder="Ton pseudo..."
+
+autocomplete="off"
+
+>
+
+<button id="startButton">
+
+▶ JOUER
+
+</button>
+
+<button
+id="menuSoundButton"
+class="blueButton">
+
+🔊 COUPER LE SON
+
+</button>
+
+<div
+class="instructions"
+style="margin-top:15px;font-size:14px;">
+
+ESPACE / CLIC = SAUT<br>
+
+O = PAUSE
+
+</div>
+
+<div
+id="leaderboardMenu"
+class="leaderboard">
+</div>
+
+</div>
+
+
+<!-- PAUSE -->
+
+<div
+id="pauseMenu"
+class="overlay">
+
+<div class="title">
+
+⏸ PAUSE
+
+</div>
+
+<button
+id="resumeButton"
+class="blueButton">
+
+▶ REPRENDRE
+
+</button>
+
+<button
+id="soundButton"
+class="blueButton">
+
+🔊 COUPER LE SON
+
+</button>
+
+<button
+id="restartPauseButton">
+
+🔄 RECOMMENCER
+
+</button>
+
+<button
+id="homeButton"
+class="redButton">
+
+🏠 ACCUEIL
+
+</button>
+
+<div
+class="instructions"
+style="margin-top:15px;font-size:14px;">
+
+Appuie sur O pour reprendre
+
+</div>
+
+</div>
+
+
+<!-- GAME OVER -->
+
+<div
+id="gameOver"
+class="overlay">
+
+<div class="title">
+
+GAME OVER
+
+</div>
+
+<div class="scoreBox">
+
+<div class="scoreLine">
+
+Joueur :
+
+<span
+id="finalPlayer"
+class="scoreNumber">
+
+-
+
+</span>
+
+</div>
+
+<div class="scoreLine">
+
+Score :
+
+<span
+id="finalScore"
+class="scoreNumber">
+
+0
+
+</span>
+
+</div>
+
+<div class="scoreLine">
+
+Record :
+
+<span
+id="bestScore"
+class="scoreNumber">
+
+0
+
+</span>
+
+</div>
+
+</div>
+
+<button id="restartButton">
+
+🔄 REJOUER
+
+</button>
+
+<button
+id="gameOverHome"
+class="redButton">
+
+🏠 ACCUEIL
+
+</button>
+
+<div
+id="leaderboardGameOver"
+class="leaderboard">
+</div>
+
+</div>
+
+
+<div id="help">
+
+ESPACE / CLIC = SAUT | O = PAUSE
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+ELEMENTS
+========================= */
+
+const canvas =
+document.getElementById("game");
+
+const ctx =
+canvas.getContext("2d");
+
+const WIDTH =
+canvas.width;
+
+const HEIGHT =
+canvas.height;
+
+const scoreElement =
+document.getElementById("score");
+
+const menuElement =
+document.getElementById("menu");
+
+const pauseMenuElement =
+document.getElementById("pauseMenu");
+
+const gameOverElement =
+document.getElementById("gameOver");
+
+const playerNameInput =
+document.getElementById("playerName");
+
+const playerDisplay =
+document.getElementById("playerDisplay");
+
+const finalPlayerElement =
+document.getElementById("finalPlayer");
+
+const finalScoreElement =
+document.getElementById("finalScore");
+
+const bestScoreElement =
+document.getElementById("bestScore");
+
+const leaderboardMenuElement =
+document.getElementById("leaderboardMenu");
+
+const leaderboardGameOverElement =
+document.getElementById("leaderboardGameOver");
+
+const soundButton =
+document.getElementById("soundButton");
+
+const menuSoundButton =
+document.getElementById("menuSoundButton");
+
+const pauseButton =
+document.getElementById("pauseButton");
+
+const fullscreenButton =
+document.getElementById("fullscreenButton");
+
+
+/* =========================
+VARIABLES
+========================= */
+
+let gameState =
+"menu";
+
+let score =
+0;
+
+let frame =
+0;
+
+let playerName =
+"";
+
+let futuristicMode =
+false;
+
+let pipes =
+[];
+
+let pipeSpeed =
+3;
+
+let pipeGap =
+175;
+
+const pipeWidth =
+70;
+
+const pipeInterval =
+100;
+
+const groundY =
+HEIGHT - 85;
+
+let soundEnabled =
+true;
+
+
+/* =========================
+OISEAU
+========================= */
+
+const bird = {
+
+x:105,
+
+y:330,
+
+velocity:0,
+
+gravity:0.43,
+
+jumpPower:-8.2,
+
+rotation:0
+
+};
+
+
+/* =========================
+RECORD
+========================= */
+
+let bestScore =
+Number(
+localStorage.getItem(
+"flappyJumpBestScore"
+)
+) || 0;
+
+
+/* =========================
+CLASSEMENT
+========================= */
+
+let leaderboard =
+[];
+
+try{
+
+const saved =
+localStorage.getItem(
+"flappyJumpLeaderboard"
+);
+
+if(saved){
+
+leaderboard =
+JSON.parse(saved);
+
+}
+
+}catch(error){
+
+leaderboard =
+[];
+
+}
+
+
+function escapeHTML(text){
+
+const div =
+document.createElement("div");
+
+div.textContent =
+text;
+
+return div.innerHTML;
+
+}
+
+
+function saveScoreToLeaderboard(){
+
+const name =
+playerName || "Joueur";
+
+const existing =
+leaderboard.find(
+player =>
+player.name.toLowerCase() ===
+name.toLowerCase()
+);
+
+if(existing){
+
+existing.score =
+Math.max(
+existing.score,
+score
+);
+
+}else{
+
+leaderboard.push({
+
+name:name,
+
+score:score
+
+});
+
+}
+
+
+leaderboard.sort(
+(a,b) =>
+b.score - a.score
+);
+
+leaderboard =
+leaderboard.slice(
+0,
+50
+);
+
+
+localStorage.setItem(
+
+"flappyJumpLeaderboard",
+
+JSON.stringify(leaderboard)
+
+);
+
+}
+
+
+function renderLeaderboard(){
+
+let html =
+"<h3>🏆 TABLEAU DES SCORES</h3>";
+
+
+if(
+leaderboard.length === 0
+){
+
+html +=
+"<div>Aucun score pour le moment</div>";
+
+}else{
+
+leaderboard.forEach(
+function(player,index){
+
+html +=
+
+"<div class='leaderRow'>" +
+
+"<span>" +
+
+(index + 1) +
+
+". " +
+
+escapeHTML(player.name) +
+
+"</span>" +
+
+"<strong>" +
+
+player.score +
+
+"</strong>" +
+
+"</div>";
+
+}
+
+);
+
+}
+
+
+leaderboardMenuElement.innerHTML =
+html;
+
+leaderboardGameOverElement.innerHTML =
+html;
+
+}
+
+
+/* =========================
+AUDIO
+========================= */
+
+let audioContext =
+null;
+
+let musicInterval =
+null;
+
+let musicPlaying =
+false;
+
+
+function initAudio(){
+
+if(!audioContext){
+
+audioContext =
+new(
+
+window.AudioContext ||
+
+window.webkitAudioContext
+
+)();
+
+}
+
+
+if(
+audioContext.state ===
+"suspended"
+){
+
+audioContext.resume();
+
+}
+
+}
+
+
+/* DING */
+
+function playDing(){
+
+if(!soundEnabled){
+
+return;
+
+}
+
+
+initAudio();
+
+
+const oscillator =
+audioContext.createOscillator();
+
+const gain =
+audioContext.createGain();
+
+
+oscillator.type =
+"sine";
+
+
+oscillator.frequency.setValueAtTime(
+
+900,
+
+audioContext.currentTime
+
+);
+
+
+oscillator.frequency
+.exponentialRampToValueAtTime(
+
+1400,
+
+audioContext.currentTime + .12
+
+);
+
+
+gain.gain.setValueAtTime(
+
+.18,
+
+audioContext.currentTime
+
+);
+
+
+gain.gain
+.exponentialRampToValueAtTime(
+
+.01,
+
+audioContext.currentTime + .35
+
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(
+audioContext.destination
+);
+
+
+oscillator.start();
+
+oscillator.stop(
+audioContext.currentTime + .35
+);
+
+}
+
+
+/* =========================
+MUSIQUE
+========================= */
+
+const melody = [
+
+523,659,784,659,
+
+587,740,880,740,
+
+659,784,988,784,
+
+523,659,784,659
+
+];
+
+let melodyIndex =
+0;
+
+
+function playMusicNote(){
+
+if(!soundEnabled ||
+gameState !== "menu" ||
+!musicPlaying){
+
+return;
+
+}
+
+
+initAudio();
+
+
+const oscillator =
+audioContext.createOscillator();
+
+const gain =
+audioContext.createGain();
+
+
+oscillator.type =
+"triangle";
+
+
+oscillator.frequency.value =
+melody[melodyIndex];
+
+
+gain.gain.setValueAtTime(
+
+.035,
+
+audioContext.currentTime
+
+);
+
+
+gain.gain
+.exponentialRampToValueAtTime(
+
+.001,
+
+audioContext.currentTime + .4
+
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(
+audioContext.destination
+);
+
+
+oscillator.start();
+
+oscillator.stop(
+audioContext.currentTime + .42
+);
+
+
+melodyIndex++;
+
+
+if(
+melodyIndex >= melody.length
+){
+
+melodyIndex =
+0;
+
+}
+
+}
+
+
+function startMenuMusic(){
+
+if(
+musicPlaying ||
+!soundEnabled
+){
+
+return;
+
+}
+
+
+musicPlaying =
+true;
+
+
+playMusicNote();
+
+
+musicInterval =
+setInterval(
+
+playMusicNote,
+
+500
+
+);
+
+}
+
+
+function stopMenuMusic(){
+
+musicPlaying =
+false;
+
+
+if(musicInterval){
+
+clearInterval(
+musicInterval
+);
+
+musicInterval =
+null;
+
+}
+
+}
+
+
+/* =========================
+SON
+========================= */
+
+function updateSoundButton(){
+
+if(soundEnabled){
+
+soundButton.innerHTML =
+"🔊 COUPER LE SON";
+
+menuSoundButton.innerHTML =
+"🔊 COUPER LE SON";
+
+}else{
+
+soundButton.innerHTML =
+"🔇 REMETTRE LE SON";
+
+menuSoundButton.innerHTML =
+"🔇 REMETTRE LE SON";
+
+}
+
+}
+
+
+function toggleSound(){
+
+soundEnabled =
+!soundEnabled;
+
+
+updateSoundButton();
+
+
+if(!soundEnabled){
+
+stopMenuMusic();
+
+}else if(
+gameState === "menu"
+){
+
+initAudio();
+
+startMenuMusic();
+
+}
+
+}
+
+
+soundButton.addEventListener(
+"click",
+toggleSound
+);
+
+menuSoundButton.addEventListener(
+"click",
+toggleSound
+);
+
+
+/* =========================
+NUAGES
+========================= */
+
+function drawCloud(x,y,size){
+
+ctx.fillStyle =
+"rgba(255,255,255,.8)";
+
+ctx.beginPath();
+
+ctx.arc(
+x,y,
+25*size,
+0,
+Math.PI*2
+);
+
+ctx.arc(
+x+30*size,
+y-10*size,
+30*size,
+0,
+Math.PI*2
+);
+
+ctx.arc(
+x+60*size,
+y,
+25*size,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+}
+
+
+/* =========================
+FOND NORMAL
+========================= */
+
+function drawNormalBackground(){
+
+const gradient =
+ctx.createLinearGradient(
+0,0,0,HEIGHT
+);
+
+gradient.addColorStop(
+0,
+"#38bdf8"
+);
+
+gradient.addColorStop(
+1,
+"#bae6fd"
+);
+
+ctx.fillStyle =
+gradient;
+
+ctx.fillRect(
+0,0,
+WIDTH,
+HEIGHT
+);
+
+
+drawCloud(
+60,150,1
+);
+
+drawCloud(
+300,250,.8
+);
+
+
+/* MONTAGNES */
+
+ctx.fillStyle =
+"#86c5a1";
+
+ctx.beginPath();
+
+ctx.moveTo(
+0,500
+);
+
+ctx.lineTo(
+70,400
+);
+
+ctx.lineTo(
+140,480
+);
+
+ctx.lineTo(
+230,350
+);
+
+ctx.lineTo(
+320,470
+);
+
+ctx.lineTo(
+420,390
+);
+
+ctx.lineTo(
+420,
+groundY
+);
+
+ctx.lineTo(
+0,
+groundY
+);
+
+ctx.fill();
+
+}
+
+
+/* =========================
+FOND FUTURISTE
+========================= */
+
+function drawFuturisticBackground(){
+
+const gradient =
+ctx.createLinearGradient(
+0,0,0,HEIGHT
+);
+
+gradient.addColorStop(
+0,
+"#020617"
+);
+
+gradient.addColorStop(
+.6,
+"#172554"
+);
+
+gradient.addColorStop(
+1,
+"#4c1d95"
+);
+
+ctx.fillStyle =
+gradient;
+
+ctx.fillRect(
+0,0,
+WIDTH,
+HEIGHT
+);
+
+
+/* ETOILES */
+
+for(
+let i=0;
+i<50;
+i++
+){
+
+const x =
+(i*71)%WIDTH;
+
+const y =
+(i*43)%400;
+
+ctx.fillStyle =
+"rgba(255,255,255,.8)";
+
+ctx.fillRect(
+x,y,
+2,2
+);
+
+}
+
+
+/* LUNE */
+
+ctx.shadowColor =
+"#22d3ee";
+
+ctx.shadowBlur =
+30;
+
+ctx.fillStyle =
+"#67e8f9";
+
+ctx.beginPath();
+
+ctx.arc(
+330,
+100,
+40,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+ctx.shadowBlur =
+0;
+
+
+/* VILLE */
+
+let x =
+0;
+
+let building =
+0;
+
+while(x<WIDTH){
+
+const buildingWidth =
+35+(building%3)*15;
+
+const buildingHeight =
+100+(building%5)*40;
+
+const y =
+groundY-buildingHeight;
+
+
+ctx.fillStyle =
+"#0f172a";
+
+ctx.fillRect(
+x,y,
+buildingWidth,
+buildingHeight
+);
+
+
+ctx.strokeStyle =
+"#06b6d4";
+
+ctx.lineWidth =
+2;
+
+ctx.strokeRect(
+x,y,
+buildingWidth,
+buildingHeight
+);
+
+
+ctx.fillStyle =
+"#67e8f9";
+
+
+for(
+let wy=y+15;
+wy<groundY-10;
+wy+=25
+){
+
+for(
+let wx=x+8;
+wx<x+buildingWidth-5;
+wx+=15
+){
+
+ctx.fillRect(
+wx,wy,
+5,8
+);
+
+}
+
+}
+
+
+x +=
+buildingWidth+7;
+
+building++;
+
+}
+
+}
+
+
+/* =========================
+SOL
+========================= */
+
+function drawGround(){
+
+if(futuristicMode){
+
+ctx.fillStyle =
+"#111827";
+
+ctx.fillRect(
+0,
+groundY,
+WIDTH,
+HEIGHT-groundY
+);
+
+
+ctx.fillStyle =
+"#06b6d4";
+
+ctx.fillRect(
+0,
+groundY,
+WIDTH,
+10
+);
+
+
+ctx.strokeStyle =
+"#67e8f9";
+
+ctx.lineWidth =
+1;
+
+
+for(
+let x=0;
+x<WIDTH;
+x+=40
+){
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+groundY+10
+);
+
+ctx.lineTo(
+x-25,
+HEIGHT
+);
+
+ctx.stroke();
+
+}
+
+}else{
+
+ctx.fillStyle =
+"#d6a45d";
+
+ctx.fillRect(
+0,
+groundY,
+WIDTH,
+HEIGHT-groundY
+);
+
+
+ctx.fillStyle =
+"#4caf50";
+
+ctx.fillRect(
+0,
+groundY,
+WIDTH,
+15
+);
+
+}
+
+}
+
+
+/* =========================
+OISEAU
+========================= */
+
+function drawBird(){
+
+ctx.save();
+
+ctx.translate(
+bird.x,
+bird.y
+);
+
+
+bird.rotation =
+Math.max(
+
+-.5,
+
+Math.min(
+1,
+bird.velocity*.07
+)
+
+);
+
+
+ctx.rotate(
+bird.rotation
+);
+
+
+let bodyColor;
+
+let wingColor;
+
+
+if(futuristicMode){
+
+bodyColor =
+"#ec4899";
+
+wingColor =
+"#67e8f9";
+
+ctx.shadowColor =
+"#ec4899";
+
+ctx.shadowBlur =
+15;
+
+}else{
+
+bodyColor =
+"#facc15";
+
+wingColor =
+"#f59e0b";
+
+}
+
+
+/* CORPS */
+
+ctx.fillStyle =
+bodyColor;
+
+ctx.beginPath();
+
+ctx.ellipse(
+0,0,
+22,17,
+0,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+ctx.shadowBlur =
+0;
+
+
+/* AILE */
+
+ctx.fillStyle =
+wingColor;
+
+ctx.beginPath();
+
+ctx.ellipse(
+-8,7,
+15,8,
+-.3,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+/* TETE */
+
+ctx.fillStyle =
+bodyColor;
+
+ctx.beginPath();
+
+ctx.arc(
+8,-8,
+18,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+/* OEIL */
+
+ctx.fillStyle =
+"white";
+
+ctx.beginPath();
+
+ctx.arc(
+15,-13,
+7,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+ctx.fillStyle =
+"black";
+
+ctx.beginPath();
+
+ctx.arc(
+17,-13,
+3,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+/* BEC */
+
+ctx.fillStyle =
+futuristicMode
+?
+"#67e8f9"
+:
+"#f97316";
+
+
+ctx.beginPath();
+
+ctx.moveTo(
+20,-4
+);
+
+ctx.lineTo(
+40,2
+);
+
+ctx.lineTo(
+20,7
+);
+
+ctx.fill();
+
+ctx.restore();
+
+}
+
+
+/* =========================
+CREER TUYAU
+========================= */
+
+function createPipe(){
+
+const top =
+
+80+
+
+Math.random()*
+
+(
+
+groundY-
+
+pipeGap-
+
+160
+
+);
+
+
+pipes.push({
+
+x:WIDTH+20,
+
+top:top,
+
+passed:false
+
+});
+
+}
+
+
+/* =========================
+DESSIN TUYAUX
+========================= */
+
+function drawPipe(pipe){
+
+const bottomY =
+pipe.top+
+pipeGap;
+
+
+drawPipePart(
+pipe.x,
+0,
+pipe.top,
+true
+);
+
+
+drawPipePart(
+pipe.x,
+bottomY,
+groundY-bottomY,
+false
+);
+
+}
+
+
+function drawPipePart(
+x,y,height,upper
+){
+
+let color1;
+
+let color2;
+
+
+if(futuristicMode){
+
+color1 =
+"#1d4ed8";
+
+color2 =
+"#22d3ee";
+
+}else{
+
+color1 =
+"#16a34a";
+
+color2 =
+"#86efac";
+
+}
+
+
+const gradient =
+ctx.createLinearGradient(
+x,0,
+x+pipeWidth,0
+);
+
+gradient.addColorStop(
+0,
+color1
+);
+
+gradient.addColorStop(
+.5,
+color2
+);
+
+gradient.addColorStop(
+1,
+color1
+);
+
+ctx.fillStyle =
+gradient;
+
+
+if(futuristicMode){
+
+ctx.shadowColor =
+"#06b6d4";
+
+ctx.shadowBlur =
+12;
+
+}
+
+
+ctx.fillRect(
+x,y,
+pipeWidth,
+height
+);
+
+ctx.shadowBlur =
+0;
+
+
+ctx.strokeStyle =
+futuristicMode
+?
+"#67e8f9"
+:
+"#166534";
+
+ctx.lineWidth =
+3;
+
+ctx.strokeRect(
+x,y,
+pipeWidth,
+height
+);
+
+
+const capHeight =
+30;
+
+let capY;
+
+
+if(upper){
+
+capY =
+y+height-capHeight;
+
+}else{
+
+capY =
+y;
+
+}
+
+
+ctx.fillStyle =
+color2;
+
+ctx.fillRect(
+x-7,
+capY,
+pipeWidth+14,
+capHeight
+);
+
+ctx.strokeRect(
+x-7,
+capY,
+pipeWidth+14,
+capHeight
+);
+
+}
+
+
+/* =========================
+COLLISION
+========================= */
+
+function checkCollision(){
+
+const birdLeft =
+bird.x-17;
+
+const birdRight =
+bird.x+18;
+
+const birdTop =
+bird.y-15;
+
+const birdBottom =
+bird.y+15;
+
+
+if(
+birdTop<=0 ||
+birdBottom>=groundY
+){
+
+return true;
+
+}
+
+
+for(
+const pipe of pipes
+){
+
+if(
+
+birdRight>pipe.x &&
+
+birdLeft<
+pipe.x+pipeWidth
+
+){
+
+if(
+
+birdTop<pipe.top ||
+
+birdBottom>
+pipe.top+pipeGap
+
+){
+
+return true;
+
+}
+
+}
+
+}
+
+
+return false;
+
+}
+
+
+/* =========================
+UPDATE
+========================= */
+
+function update(){
+
+if(
+gameState !==
+"playing"
+){
+
+return;
+
+}
+
+
+frame++;
+
+
+bird.velocity +=
+bird.gravity;
+
+bird.y +=
+bird.velocity;
+
+
+/* NOUVEAU TUYAU */
+
+if(
+frame%
+pipeInterval ===
+0
+){
+
+createPipe();
+
+}
+
+
+/* TUYAUX */
+
+for(
+const pipe of pipes
+){
+
+pipe.x -=
+pipeSpeed;
+
+
+/* POINT */
+
+if(
+
+!pipe.passed &&
+
+pipe.x+
+pipeWidth<
+bird.x
+
+){
+
+pipe.passed =
+true;
+
+score++;
+
+scoreElement.textContent =
+score;
+
+
+/* DING */
+
+playDing();
+
+
+/* MODE FUTURISTE */
+
+if(
+
+score>=25 &&
+
+!futuristicMode
+
+){
+
+futuristicMode =
+true;
+
+}
+
+
+/* DIFFICULTE */
+
+if(
+score%5===0
+){
+
+pipeSpeed +=
+.12;
+
+if(
+pipeGap>135
+){
+
+pipeGap -=
+4;
+
+}
+
+}
+
+}
+
+}
+
+
+/* SUPPRESSION */
+
+pipes =
+pipes.filter(
+pipe =>
+pipe.x>-100
+);
+
+
+/* COLLISION */
+
+if(
+checkCollision()
+){
+
+endGame();
+
+}
+
+}
+
+
+/* =========================
+DESSIN
+========================= */
+
+function draw(){
+
+ctx.clearRect(
+0,0,
+WIDTH,
+HEIGHT
+);
+
+
+if(futuristicMode){
+
+drawFuturisticBackground();
+
+}else{
+
+drawNormalBackground();
+
+}
+
+
+for(
+const pipe of pipes
+){
+
+drawPipe(pipe);
+
+}
+
+
+drawGround();
+
+drawBird();
+
+}
+
+
+/* =========================
+BOUCLE
+========================= */
+
+function gameLoop(){
+
+update();
+
+draw();
+
+requestAnimationFrame(
+gameLoop
+);
+
+}
+
+
+/* =========================
+SAUT
+========================= */
+
+function jump(){
+
+if(
+gameState !==
+"playing"
+){
+
+return;
+
+}
+
+
+bird.velocity =
+bird.jumpPower;
+
+}
+
+
+/* =========================
+DEMARRER
+========================= */
+
+function startGame(){
+
+initAudio();
+
+stopMenuMusic();
+
+
+playerName =
+playerNameInput.value.trim();
+
+
+if(
+playerName === ""
+){
+
+playerName =
+"Joueur";
+
+}
+
+
+gameState =
+"playing";
+
+
+score =
+0;
+
+frame =
+0;
+
+futuristicMode =
+false;
+
+pipes =
+[];
+
+
+pipeSpeed =
+3;
+
+pipeGap =
+175;
+
+
+bird.x =
+105;
+
+bird.y =
+330;
+
+bird.velocity =
+0;
+
+
+scoreElement.textContent =
+"0";
+
+
+playerDisplay.textContent =
+"👤 "+playerName;
+
+
+menuElement.style.display =
+"none";
+
+pauseMenuElement.style.display =
+"none";
+
+gameOverElement.style.display =
+"none";
+
+
+pauseButton.style.display =
+"block";
+
+
+createPipe();
+
+}
+
+
+/* =========================
+PAUSE
+========================= */
+
+function pauseGame(){
+
+if(
+gameState ===
+"playing"
+){
+
+gameState =
+"paused";
+
+pauseMenuElement.style.display =
+"flex";
+
+pauseButton.style.display =
+"none";
+
+}
+
+}
+
+
+function resumeGame(){
+
+if(
+gameState ===
+"paused"
+){
+
+gameState =
+"playing";
+
+pauseMenuElement.style.display =
+"none";
+
+pauseButton.style.display =
+"block";
+
+}
+
+}
+
+
+/* =========================
+GAME OVER
+========================= */
+
+function endGame(){
+
+if(
+gameState !==
+"playing"
+){
+
+return;
+
+}
+
+
+gameState =
+"gameover";
+
+
+pauseButton.style.display =
+"none";
+
+
+saveScoreToLeaderboard();
+
+renderLeaderboard();
+
+
+if(
+score>bestScore
+){
+
+bestScore =
+score;
+
+localStorage.setItem(
+
+"flappyJumpBestScore",
+
+bestScore
+
+);
+
+}
+
+
+finalPlayerElement.textContent =
+playerName;
+
+finalScoreElement.textContent =
+score;
+
+bestScoreElement.textContent =
+bestScore;
+
+
+gameOverElement.style.display =
+"flex";
+
+}
+
+
+/* =========================
+ACCUEIL
+========================= */
+
+function goHome(){
+
+gameState =
+"menu";
+
+
+score =
+0;
+
+frame =
+0;
+
+pipes =
+[];
+
+futuristicMode =
+false;
+
+
+bird.y =
+330;
+
+bird.velocity =
+0;
+
+
+scoreElement.textContent =
+"0";
+
+playerDisplay.textContent =
+"";
+
+
+pauseMenuElement.style.display =
+"none";
+
+gameOverElement.style.display =
+"none";
+
+menuElement.style.display =
+"flex";
+
+
+pauseButton.style.display =
+"none";
+
+
+renderLeaderboard();
+
+
+if(soundEnabled){
+
+initAudio();
+
+startMenuMusic();
+
+}
+
+}
+
+
+/* =========================
+PLEIN ECRAN
+========================= */
+
+function toggleFullscreen(){
+
+const container =
+document.getElementById(
+"gameContainer"
+);
+
+
+if(!document.fullscreenElement){
+
+if(
+container.requestFullscreen
+){
+
+container.requestFullscreen();
+
+}
+
+}else{
+
+document.exitFullscreen();
+
+}
+
+}
+
+
+fullscreenButton.addEventListener(
+"click",
+toggleFullscreen
+);
+
+
+/* =========================
+CLAVIER
+========================= */
+
+document.addEventListener(
+
+"keydown",
+
+function(event){
+
+
+if(
+event.code ===
+"Space"
+){
+
+if(
+document.activeElement ===
+playerNameInput
+){
+
+return;
+
+}
+
+event.preventDefault();
+
+jump();
+
+}
+
+
+/* O PAUSE */
+
+if(
+
+event.key
+.toLowerCase() ===
+"o"
+
+&&
+
+document.activeElement !==
+playerNameInput
+
+){
+
+event.preventDefault();
+
+
+if(
+gameState ===
+"playing"
+){
+
+pauseGame();
+
+}
+
+else if(
+gameState ===
+"paused"
+){
+
+resumeGame();
+
+}
+
+}
+
+}
+
+);
+
+
+/* =========================
+CLIC
+========================= */
+
+canvas.addEventListener(
+
+"click",
+
+function(){
+
+jump();
+
+}
+
+);
+
+
+/* =========================
+TELEPHONE
+========================= */
+
+canvas.addEventListener(
+
+"touchstart",
+
+function(event){
+
+event.preventDefault();
+
+jump();
+
+},
+
+{
+passive:false
+}
+
+);
+
+
+/* =========================
+BOUTON PAUSE
+========================= */
+
+pauseButton.addEventListener(
+
+"click",
+
+function(event){
+
+event.stopPropagation();
+
+pauseGame();
+
+}
+
+);
+
+
+pauseButton.addEventListener(
+
+"touchstart",
+
+function(event){
+
+event.preventDefault();
+
+event.stopPropagation();
+
+pauseGame();
+
+},
+
+{
+passive:false
+}
+
+);
+
+
+/* =========================
+BOUTONS
+========================= */
+
+document
+.getElementById(
+"startButton"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+startGame();
+
+}
+
+);
+
+
+document
+.getElementById(
+"resumeButton"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+resumeGame();
+
+}
+
+);
+
+
+document
+.getElementById(
+"restartPauseButton"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+startGame();
+
+}
+
+);
+
+
+document
+.getElementById(
+"homeButton"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+goHome();
+
+}
+
+);
+
+
+document
+.getElementById(
+"restartButton"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+startGame();
+
+}
+
+);
+
+
+document
+.getElementById(
+"gameOverHome"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+goHome();
+
+}
+
+);
+
+
+/* =========================
+ENTER
+========================= */
+
+playerNameInput.addEventListener(
+
+"keydown",
+
+function(event){
+
+if(
+event.key ===
+"Enter"
+){
+
+event.preventDefault();
+
+startGame();
+
+}
+
+}
+
+);
+
+
+/* =========================
+MUSIQUE
+========================= */
+
+document.addEventListener(
+
+"click",
+
+function(){
+
+if(
+gameState ===
+"menu"
+){
+
+if(soundEnabled){
+
+initAudio();
+
+startMenuMusic();
+
+}
+
+}
+
+},
+
+{
+once:true
+}
+
+);
+
+
+/* =========================
+INITIALISATION
+========================= */
+
+bestScoreElement.textContent =
+bestScore;
+
+updateSoundButton();
+
+renderLeaderboard();
+
+gameLoop();
+
+</script>
+
+</body>
+</html>
