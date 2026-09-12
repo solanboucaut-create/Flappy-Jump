@@ -3,6 +3,7 @@
   "short_name": "Flappy Jump",
   "description": "Mon jeu Flappy Jump jouable sur téléphone et ordinateur",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#020617",
@@ -13,7 +14,7 @@
       "src": "Copilot_20260911_215923.png",
       "sizes": "1024x1024",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
