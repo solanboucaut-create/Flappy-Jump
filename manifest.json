@@ -9,20 +9,13 @@
   "background_color": "#020617",
   "theme_color": "#020617",
   "lang": "fr",
-  ""icons": [
-  {
-    "src": "192.png",
-    "sizes": "192x192",
-    "type": "image/png",
-    "purpose": "any"
-  },
-  {
-    "src": "Copilot_20260911_215923.png",
-    "sizes": "1024x1024",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }
-  ]": [
+  "icons": [
+    {
+      "src": "192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "Copilot_20260911_215923.png",
       "sizes": "1024x1024",
