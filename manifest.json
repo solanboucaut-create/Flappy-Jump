@@ -17,6 +17,12 @@
       "purpose": "any"
     },
     {
+      "src": "512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "Copilot_20260911_215923.png",
       "sizes": "1024x1024",
       "type": "image/png",
