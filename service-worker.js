@@ -1,4 +1,4 @@
-const CACHE_NAME = "flappy-jump-v1";
+const CACHE_NAME = "flappy-jump-v2";
 
 const ASSETS = [
   "./",
